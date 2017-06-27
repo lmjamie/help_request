@@ -61,7 +61,7 @@ VALUES
 ('CS Help Lab'),
 ('Remote');
 
-INSERT INTO helpers(name, fname, lname, pass_hash)
+INSERT INTO helpers(username, fname, lname, pass_hash)
 VALUES
 ('lmjamie', 'Landon', 'Jamieson', '$2a$10$d/yqgmBAmWmvueCAqCEsQOewRnTcJQMM1dGjxxXm4dD0kkulICshG'),
 ('sburton', 'Brother', 'Burton', '$2a$10$0xuMLxGNo.53WYaSNet5g.9o3s362.gpjrJgA/aTw6ppwG1wvFxFG');
