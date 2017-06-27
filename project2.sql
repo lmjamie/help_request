@@ -37,7 +37,7 @@ CREATE TABLE current_requests
 (
   id BIGSERIAL PRIMARY KEY,
   request_id BIGINT NOT NULL REFERENCES requests(id),
-  started TIMESTAMP NOT NULL DEFAULT NOW\()
+  started TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE serving_requests
