@@ -1,9 +1,10 @@
 const pg = require('pg');
 if (!process.env.LOCAL)
   pg.defaults.ssl = true;
+
 const { Pool } = pg;
 const pool = new Pool({
-  connectionString: (process.env.DATABASE_URL)
+  connectionString: process.env.DATABASE_URL
 });
 
 function validate_id(id, onErrorCall) {
@@ -20,9 +21,6 @@ function validate_id(id, onErrorCall) {
 }
 
 function insertRequest(requestInfo, callback) {
-  //in case of error midway;
-  var failed = false;
-
   //insert request and get id.
   pool.query({
     name: "insert-request",
