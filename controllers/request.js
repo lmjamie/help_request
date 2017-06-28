@@ -5,7 +5,7 @@ function handleAddRequest(request, response) {
   console.log("Adding Request:", requestInfo);
   modelRequest.addRequest(requestInfo, function(error, result) {
     if (error)
-      return response.status(400).json(error);
+      return response.status(error.code).json(error);
     response.json(result);
   });
 }
@@ -15,7 +15,7 @@ function handleEditRequest(request, response) {
   console.log("Editing Request for:", updatedInfo);
   modelRequest.editRequest(updatedInfo, function(error, result) {
     if (error)
-      return response.status(400).json(error);
+      return response.status(error.code).json(error);
     response.json(result);
   });
 }
@@ -24,7 +24,7 @@ function handleCurrentRequests(request, response) {
   console.log("Getting all current Requests!");
   modelRequest.currentRequests(function(error, result) {
     if (error)
-      return response.status(400).json(error);
+      return response.status(error.code).json(error);
     response.json(result);
   });
 }
@@ -34,7 +34,7 @@ function handleRemoveRequest(request, response) {
   console.log("Delete Request with id:", id);
   modelRequest.removeRequest(id, function(error, result) {
     if (error)
-      return response.status(400).json(error);
+      return response.status(error.code).json(error);
     response.json(result);
   });
 }

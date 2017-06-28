@@ -32,6 +32,7 @@ function validate(toValidate, onErrorCall, isDBCall = false) {
     if (!toValidate[r]) {
       onErrorCall({
         status: "Failure",
+        code: 400,
         failInfo: "Missing required information: " + r
       });
       return false;
@@ -42,6 +43,7 @@ function validate(toValidate, onErrorCall, isDBCall = false) {
   if (!classes_names.includes(toValidate.class)) {
     onErrorCall({
       status: "Failure",
+      code: 400,
       failInfo: "invalid class: " + toValidate.class
     });
     return false;
@@ -50,6 +52,7 @@ function validate(toValidate, onErrorCall, isDBCall = false) {
   if (!locations_names.includes(toValidate.location)) {
     onErrorCall({
       status: "Failure",
+      code: 400,
       failInfo: "invalid location: " + toValidate.location
     });
     return false;
@@ -59,6 +62,7 @@ function validate(toValidate, onErrorCall, isDBCall = false) {
     if (!toValidate.email) {
       onErrorCall({
         status: "Failure",
+        code: 400,
         failInfo: "Missing required information: email"
       });
       return false;

@@ -10,7 +10,8 @@ function validate_id(id, onErrorCall) {
   //matches digits only from beginning to end of string
   if (!/^\d+$/.test(id)) {
     onErrorCall({
-      status: "Failure",
+      status: "",
+      code: 400,
       failInfo: "invalid id provided: " + id
     });
     return false;
@@ -36,7 +37,8 @@ function insertRequest(requestInfo, callback) {
     if (error) {
       console.error(error);
       return callback({
-        status: "Failure",
+        status: "",
+        code: 500,
         failInfo: "Failed to insert request"
       });
     }
@@ -51,7 +53,8 @@ function insertRequest(requestInfo, callback) {
       if (error) {
         console.error(error);
         return callback({
-          status: "Failure",
+          status: "",
+          code: 500,
           failInfo: "Failed to insert current request"
         });
       }
@@ -78,7 +81,8 @@ function updateRequest(updatedInfo, callback) {
     if (error) {
       console.error(error);
       return callback({
-        status: "Failure",
+        status: "",
+        code: 500,
         failInfo: "Failed to updated request with id: " + updatedInfo.id
       });
     }
@@ -100,7 +104,8 @@ function getAllRequests(callback) {
     if (error) {
       console.error(error);
       return callback({
-        status: "Failure",
+        status: "",
+        code: 500,
         failInfo: "Failed to retreive requests"
       });
     }
@@ -122,7 +127,8 @@ function deleteRequest(id, callback) {
     if (error) {
       console.error(error);
       return callback({
-        status: "Failure",
+        status: "",
+        code: 500,
         failInfo: "Failed to delete current request"
       });
     }
@@ -137,6 +143,7 @@ function deleteRequest(id, callback) {
         console.error(error);
         return callback({
           status: "Failure",
+          code: 500,
           failInfo: "Failed to delete requests"
         });
       }
@@ -159,6 +166,7 @@ function serveRequest(id, helper_id, callback) {
       console.error(error);
       return callback({
         status: "Failure",
+        code: 500,
         failInfo: "Failed to delete current request"
       });
     }
@@ -173,6 +181,7 @@ function serveRequest(id, helper_id, callback) {
         console.error(error);
         return callback({
           status: "Failure",
+          code: 500,
           failInfo: "Failed to insert serving request"
         });
       }
@@ -198,6 +207,7 @@ function getAllServing(callback) {
       console.error(error);
       return callback({
         status: "Failure",
+        code: 500,
         failInfo: "Failed to retreive serving requests"
       });
     }
@@ -220,6 +230,7 @@ function deleteServe(id, callback) {
       console.error(error);
       return callback({
         status: "Failure",
+        code: 500,
         failInfo: "Failed to delete serving request"
       });
     }
@@ -253,6 +264,7 @@ function getClassesNames(callback) {
       console.error(error);
       return callback({
         status: "Failure",
+        code: 500,
         failInfo: "Failed to get classes names"
       });
     }
@@ -272,7 +284,7 @@ function getLocationsNames(callback) {
     if (error) {
       console.error(error);
       return callback({
-        status: "Failure",
+        status: "",
         failInfo: "Failed to get locations names"
       });
     }

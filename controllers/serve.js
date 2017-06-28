@@ -6,7 +6,7 @@ function handleServeRequest(request, response) {
   console.log("Serve request for id:", cr_id, "With helper", helper_id);
   modelServe.serveRequest(cr_id, helper_id, function(error, result) {
     if (error)
-      return response.status(400).json(error);
+      return response.status(error.code).json(error);
     response.json(result);
   });
 }
@@ -15,7 +15,7 @@ function handleServingRequest(request, response) {
   console.log("Getting all Serving Requests");
   modelServe.servingRequests(function(error, results) {
     if (error)
-      return response.status(400).json(error);
+      return response.status(error.code).json(error);
     response.json(results);
   });
 }
@@ -25,7 +25,7 @@ function handleCompleteServe(request, response) {
   console.log("Completing serving the request with id:", id);
   modelServe.completeServe(id, function(error, results) {
     if (error)
-      return response.status(400).json(error);
+      return response.status(error.code).json(error);
     response.json(results);
   });
 }
