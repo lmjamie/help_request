@@ -11,9 +11,10 @@ app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.cookieParser("CAMSGLORY"));
+app.use(express.cookieSession());
 app.use(favicon(__dirname + "/public/images/favicon.ico"));
 app.use(express.static(__dirname + "/public"));
-
 
 // User viewing page
 app.get("/", controllerPage.renderQueue);

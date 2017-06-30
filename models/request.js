@@ -59,11 +59,11 @@ function validate(toValidate, onErrorCall, isDBCall = false) {
   }
 
   if ("Remote" === toValidate.location)
-    if (!toValidate.email) {
+    if (!toValidate.contact) {
       onErrorCall({
         status: "Failure",
         code: 400,
-        failInfo: "Missing required information: email"
+        failInfo: "Missing required information: contact"
       });
       return false;
     }

@@ -24,12 +24,12 @@ function insertRequest(requestInfo, callback) {
   //insert request and get id.
   pool.query({
     name: "insert-request",
-    text: "INSERT INTO requests(fname, lname, class_id, description, email, " +
+    text: "INSERT INTO requests(fname, lname, class_id, description, contact, " +
     "location_id) " + "SELECT $1, $2, c.id, $4, $5, l.id FROM classes c, " +
     "locations l WHERE c.name = $3 AND l.name = $6 RETURNING id",
     values: [
       requestInfo.fname, requestInfo.lname, requestInfo.class,
-      requestInfo.description, requestInfo.email, requestInfo.location
+      requestInfo.description, requestInfo.contact, requestInfo.location
     ]
   }, function (error, result) {
     if (error) {
@@ -69,11 +69,11 @@ function updateRequest(updatedInfo, callback) {
   pool.query({
     name: "update-request",
     text: "UPDATE requests SET fname = $2, lname = $3, class_id = c.id, " +
-    "description = $5, email = $6, location_id = l.id FROM classes c, " +
+    "description = $5, contact = $6, location_id = l.id FROM classes c, " +
     "locations l WHERE requests.id = $1 AND c.name = $3 AND l.name = $7",
     values: [
       updatedInfo.id, updatedInfo.fname, updatedInfo.lname, updatedInfo.class,
-      updatedInfo.description, updatedInfo.email, updatedInfo.location
+      updatedInfo.description, updatedInfo.contact, updatedInfo.location
     ]
   }, function (error, result) {
     if (error) {
@@ -94,7 +94,7 @@ function updateRequest(updatedInfo, callback) {
 function getAllRequests(callback) {
   pool.query({
     name: "fetch-all-requests",
-    text: "SELECT r.id, r.fname, r.lname, c.name AS class, r.description, r.email, " +
+    text: "SELECT r.id, r.fname, r.lname, c.name AS class, r.description, r.contact, " +
     "l.name AS location, cr.started FROM requests r JOIN classes c ON r.class_id " +
     "= c.id JOIN locations l ON r.location_id = l.id JOIN current_requests cr ON " +
     "r.id = cr.request_id ORDER BY cr.started"
@@ -195,7 +195,7 @@ function getAllServing(callback) {
   pool.query({
     name: "fetch-all-serving",
     text: "SELECT r.id, r.fname AS r_fname, r.lname r_lname, c.name AS class," +
-    " r.description, r.email, l.name AS location, sr.helper_id, h.fname AS " +
+    " r.description, r.contact, l.name AS location, sr.helper_id, h.fname AS " +
     "h_fname, h.lname AS h_lname, sr.started FROM requests r JOIN classes c ON " +
     "r.class_id = c.id JOIN locations l ON r.location_id = l.id JOIN " +
     "serving_requests sr ON r.id = sr.request_id JOIN helpers h ON sr.helper_id" +

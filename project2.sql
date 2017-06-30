@@ -29,7 +29,7 @@ CREATE TABLE requests
   lname VARCHAR(256) NOT NULL,
   class_id SMALLINT NOT NULL REFERENCES classes(id),
   description TEXT,
-  email VARCHAR(256),
+  contact VARCHAR(256),
   location_id SMALLINT NOT NULL REFERENCES locations(id)
 );
 

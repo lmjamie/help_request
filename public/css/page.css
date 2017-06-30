@@ -7,3 +7,11 @@ body {
 main {
   flex: 1 0 auto;
 }
+
+th, td {
+  font-size: 85%;
+}
+
+table, th, td {
+  padding: 5px;
+}
