@@ -7,11 +7,21 @@ function getRequestsAndServing(callback) {
     database.getAllRequests(function (cError, cResult) {
       if (cError)
         return callback(cError);
-      callback(null, {
-        status: "Success",
-        info: "Retrived both requests and serving",
-        serving: sResult.rows,
-        requests: cResult.rows
+      database.getClassesNames(function (cnError, cnResult) {
+        if (cnError)
+          return callback(cnError);
+        database.getLocationsNames(function (lError, lResult) {
+          if (lError)
+            return callback(lError);
+          callback(null, {
+            status: "Success",
+            info: "Retrived both requests and serving",
+            serving: sResult.rows,
+            requests: cResult.rows,
+            class_names: cnResult,
+            location_names: lResult
+          });
+        });
       });
     });
   });

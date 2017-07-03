@@ -11,7 +11,7 @@ function validate_id(id, onErrorCall) {
   //matches digits only from beginning to end of string
   if (!/^\d+$/.test(id)) {
     onErrorCall({
-      status: "",
+      status: "Failure",
       code: 400,
       failInfo: "invalid id provided: " + id
     });
@@ -35,7 +35,7 @@ function insertRequest(requestInfo, callback) {
     if (error) {
       console.error(error);
       return callback({
-        status: "",
+        status: "Failure",
         code: 500,
         failInfo: "Failed to insert request"
       });
@@ -51,7 +51,7 @@ function insertRequest(requestInfo, callback) {
       if (error) {
         console.error(error);
         return callback({
-          status: "",
+          status: "Failure",
           code: 500,
           failInfo: "Failed to insert current request"
         });
@@ -70,7 +70,7 @@ function updateRequest(updatedInfo, callback) {
     name: "update-request",
     text: "UPDATE requests SET fname = $2, lname = $3, class_id = c.id, " +
     "description = $5, contact = $6, location_id = l.id FROM classes c, " +
-    "locations l WHERE requests.id = $1 AND c.name = $3 AND l.name = $7",
+    "locations l WHERE requests.id = $1 AND c.name = $4 AND l.name = $7",
     values: [
       updatedInfo.id, updatedInfo.fname, updatedInfo.lname, updatedInfo.class,
       updatedInfo.description, updatedInfo.contact, updatedInfo.location
@@ -79,7 +79,7 @@ function updateRequest(updatedInfo, callback) {
     if (error) {
       console.error(error);
       return callback({
-        status: "",
+        status: "Failure",
         code: 500,
         failInfo: "Failed to updated request with id: " + updatedInfo.id
       });
@@ -102,7 +102,7 @@ function getAllRequests(callback) {
     if (error) {
       console.error(error);
       return callback({
-        status: "",
+        status: "Failure",
         code: 500,
         failInfo: "Failed to retreive requests"
       });
@@ -125,7 +125,7 @@ function deleteRequest(id, callback) {
     if (error) {
       console.error(error);
       return callback({
-        status: "",
+        status: "Failure",
         code: 500,
         failInfo: "Failed to delete current request"
       });
@@ -135,7 +135,7 @@ function deleteRequest(id, callback) {
     pool.query({
       name: "remove-request",
       text: "DELETE FROM requests WHERE id = $1",
-      values: id
+      values: [id]
     }, function (error, result) {
       if (error) {
         console.error(error);
@@ -236,7 +236,7 @@ function deleteServe(id, callback) {
     pool.query({
       name: "remove-request",
       text: "DELETE FROM requests WHERE id = $1",
-      values: id
+      values: [id]
     }, function (error, result) {
       if (error) {
         console.error(error);
@@ -282,7 +282,8 @@ function getLocationsNames(callback) {
     if (error) {
       console.error(error);
       return callback({
-        status: "",
+        status: "Failure",
+        code: 500,
         failInfo: "Failed to get locations names"
       });
     }

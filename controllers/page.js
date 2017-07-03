@@ -8,8 +8,12 @@ function renderQueue(request, response) {
 
     response.render("pages/queue", {
       serving: results.serving,
-      requests: results.requests});
-    // response.send(results); //testing
+      requests: results.requests,
+      class_names: results.class_names,
+      location_names: results.location_names,
+      helper: request.session.helper,
+      student: request.session.student
+      });
   });
 }
 

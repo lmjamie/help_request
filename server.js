@@ -1,18 +1,24 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const favicon = require('serve-favicon');
 const controllerRequest = require('./controllers/request.js');
 const controllerServe = require('./controllers/serve.js');
 const controllerPage = require('./controllers/page.js');
+const secret = "CAMSGLORY";
 
 app.set("port", (process.env.PORT || 5000));
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.cookieParser("CAMSGLORY"));
-app.use(express.cookieSession());
+app.use(cookieParser(secret));
+app.use(cookieSession({
+  name: "Session",
+  keys: [secret]
+}));
 app.use(favicon(__dirname + "/public/images/favicon.ico"));
 app.use(express.static(__dirname + "/public"));
 

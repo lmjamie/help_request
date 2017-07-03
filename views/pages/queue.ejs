@@ -1,4 +1,3 @@
-<% var helper = true /*check if helper*/ %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +15,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
   <script src="js/flipclock.min.js"></script>
   <script src="js/onReady.js"></script>
+  <script src="js/requests.js"></script>
   <title>CS Help Queue</title>
 </head>
 <body>
@@ -44,7 +44,11 @@
                   </thead>
                   <tbody>
                     <% serving.forEach(function (s) { %>
-                      <tr data-id="<%= s.id %>" data-helperid="<%= s.helper_id %>">
+                      <tr data-id="<%= s.id %>" data-helperid="<%= s.helper_id %>"
+                      <% if (helper) { %>
+                        onclick="servingClick($(this));"
+                      <% } %>
+                        >
                         <td><%= s.r_fname + " " + s.r_lname %></td>
                         <td><%= s.class %></td>
                         <td><%= s.location %></td>
@@ -73,14 +77,19 @@
                     <th>Class</th>
                     <th>Location</th>
                     <th>Description</th>
-                    <% if (helper /*check if helper*/) { %>
+                    <% if (helper) { %>
                       <th>Contact</th>
                     <% } %>
                     <th>Minutes</th>
                   </thead>
                   <tbody>
-                    <% requests.forEach(function (r) { %>
-                      <tr data-id="<%= r.id %>"%>>
+                    <% requests.forEach(function (r, i) { %>
+                      <tr data-id="<%= r.id %>"%> data-contact="<%= r.contact %>" data-fname="<%= r.fname %>" data-lname="<%= r.lname %>"
+                      <% if (helper) { %>
+                        onclick="helperCurrentClick($(this), <%= i == 0 %>);"
+                      <% } else if (r.id == student) { %>
+                        onclick="studentCurrentClick($(this));"
+                      <% } %> >
                         <td><%= r.fname + " " + r.lname %></td>
                         <td><%= r.class %></td>
                         <td><%= r.location %></td>
@@ -101,9 +110,186 @@
         </ul>
       </div>
     </div>
+    <div class="modal blue lighten-5 center" id="serveConfirm">
+      <div class="modal-content">
+        <p>What would you like to do?</p>
+      </div>
+      <div class="modal-footer blue lighten-5 center">
+        <div class="row">
+          <div class="col l4 m4 s6 offset-l2 offset-m2 offset-s3">
+            <a href="#" class="waves-effects blue lighten-1 btn" onclick="completeServing();">
+              <i class="material-icons right">done</i>Complete
+            </a>
+          </div>
+          <div class="col l3 m3 s6 offset-s3">
+            <a href="#" class="modal-action modal-close waves-effects red lighten-1 btn">
+              <i class="material-icons right">cancel</i>Cancel
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal blue lighten-5 center" id="currentConfirm">
+      <div class="modal-content">
+        <p>What would you like to do?</p>
+      </div>
+      <div class="modal-footer blue lighten-5 center">
+        <div class="row">
+          <div class="col s3 offset-s1">
+            <a id="serveButton" href="#" class ="waves-effects green lighten-1 btn" onclick="serveCurrent();">
+              <i class="material-icons right">priority_high</i>Help
+            </a>
+          </div>
+          <div class="col s3">
+            <a href="#" class="modal-action modal-close waves-effects blue lighten-1 btn">
+              <i class="material-icons right">cancel</i>Cancel
+            </a>
+          </div>
+          <div class="col s3">
+            <a href="#" class="waves-effects red lighten-1 btn" onclick="removeCurrent('currentConfirm');">
+              <i class="material-icons right">delete</i>Remove
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal blue lighten-5 center" id="editCurrent">
+      <div class="modal-content">
+        <div class="row">
+          <form class="col s12">
+            <div class="row">
+              <div class="input-field col s6">
+                <input type="text" class="validate" id="editfname" required>
+                <label for="editfname">First Name</label>
+              </div>
+              <div class="input-field col s6">
+                <input type="text" class="validate" id="editlname" required>
+                <label for="editlname">Last Name</label>
+              </div>
+              <div class="input-field col s6">
+                <select class="browser-default" id="editclass">
+                <% class_names.forEach(function (name) { %>
+                  <option value="<%= name %>"><%= name %></option>
+                <% }); %>
+                </select>
+                <label for="editclass" class="active">Class</label>
+              </div>
+              <div class="input-field col s6">
+                <select class="browser-default" id="editlocation">
+                <% location_names.forEach(function (name) { %>
+                  <option value="<%= name %>"><%= name %></option>
+                <% }); %>
+                </select>
+                <label for="editlocation" class="active">Location</label>
+              </div>
+              <div class="input-field col s12">
+                <textarea name="" id="editdescription" class="materialize-textarea" data-length="200"></textarea>
+                <label for="editdescription">Description</label>
+              </div>
+              <div class="input-field col s12">
+                <input type="text" class="validate" id="editcontact">
+                <label for="editcontact">Contact</label>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer blue lighten-5 center">
+        <div class="row">
+          <div class="col s3 offset-s1">
+            <a href="#" class ="waves-effects green lighten-1 btn" onclick="updateCurrent();">
+              <i class="material-icons right">edit</i>Update
+            </a>
+          </div>
+          <div class="col s3">
+            <a href="#" class="modal-action modal-close waves-effects blue lighten-1 btn">
+              <i class="material-icons right">cancel</i>Cancel
+            </a>
+          </div>
+          <div class="col s3">
+            <a href="#" class="waves-effects red lighten-1 btn" onclick="removeCurrent('editCurrent');">
+              <i class="material-icons right">delete</i>Remove
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal blue lighten-5 center" id="addCurrent">
+      <div class="modal-content">
+        <div class="row">
+          <form class="col s12">
+            <div class="row">
+              <div class="input-field col s6">
+                <input type="text" class="validate" id="fname" required>
+                <label for="fname">First Name</label>
+              </div>
+              <div class="input-field col s6">
+                <input type="text" class="validate" id="lname" required>
+                <label for="lname">Last Name</label>
+              </div>
+              <div class="input-field col s6">
+                <select class="browser-default" id="class" required>
+                  <option value="" disabled selected></option>
+                <% class_names.forEach(function (name) { %>
+                  <option value="<%= name %>"><%= name %></option>
+                <% }); %>
+                </select>
+                <label for="class" class="active">Class</label>
+              </div>
+              <div class="input-field col s6">
+                <select class="browser-default" id="location" require>
+                  <option value="" disabled selected></option>
+                <% location_names.forEach(function (name) { %>
+                  <option value="<%= name %>"><%= name %></option>
+                <% }); %>
+                </select>
+                <label for="location" class="active">Location</label>
+              </div>
+              <div class="input-field col s12">
+                <textarea name="" id="description" class="materialize-textarea validate" data-length="200"></textarea>
+                <label for="description">Description</label>
+              </div>
+              <div class="input-field col s12">
+                <input type="text" class="validate" id="contact">
+                <label for="contact">Contact</label>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer blue lighten-5 center">
+        <div class="row">
+          <div class="col s4 offset-s2">
+            <a href="#" class ="waves-effects blue lighten-1 btn" onclick="addCurrent();">
+              <i class="material-icons right">done</i>Get Help
+            </a>
+          </div>
+          <div class="col s3">
+            <a href="#" class="modal-action modal-close waves-effects red lighten-1 btn">
+              <i class="material-icons right">cancel</i>Cancel
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% if (!student) { %>
+    <div class="fixed-action-btn click-to-toggle" id="addfab">
+      <a href="#addCurrent" class="btn-floating blue darken-1"><i class="material-icons">live_help</i></a>
+    </div>
+  <% } %>
   </main>
   <footer>
     <%- include("../partials/footer"); %>
   </footer>
+<% if (helper) { %>
+  <script>
+    var helper_id = <%= helper %>;
+  </script>
+<% } %>
+<% if (student) { %>
+  <script>
+    var student_id = <%= student %>;
+  </script>
+<% } %>
 </body>
 </html>

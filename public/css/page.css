@@ -15,3 +15,8 @@ th, td {
 table, th, td {
   padding: 5px;
 }
+
+.modal {
+overflow: visible;
+max-height: 100%;
+}
