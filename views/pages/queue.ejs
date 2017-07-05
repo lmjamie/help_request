@@ -13,6 +13,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <!-- Compiled and minified JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <script src="js/flipclock.min.js"></script>
   <script src="js/onReady.js"></script>
   <script src="js/requests.js"></script>
@@ -272,7 +273,39 @@
         </div>
       </div>
     </div>
-  <% if (!student) { %>
+    <div class="modal blue lighten-5 center" id="login">
+      <div class="modal-content">
+        <div class="row">
+          <form class="col s12">
+            <div class="row">
+              <div class="input-field col s6 offset-s3">
+                <input type="text" class="validate" id="username" required>
+                <label for="username">Username</label>
+              </div>
+              <div class="input-field col s6 offset-s3">
+                <input type="password" class="validate" id="password" required>
+                <label for="password">Password</label>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer blue lighten-5 center">
+        <div class="row">
+          <div class="col s4 offset-s2">
+            <a href="#" class ="waves-effects blue lighten-1 btn" onclick="addCurrent();">
+              <i class="material-icons right">send</i>Login
+            </a>
+          </div>
+          <div class="col s3">
+            <a href="#" class="modal-action modal-close waves-effects red lighten-1 btn">
+              <i class="material-icons right">cancel</i>Cancel
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% if (!student && !helper) { %>
     <div class="fixed-action-btn click-to-toggle" id="addfab">
       <a href="#addCurrent" class="btn-floating blue darken-1"><i class="material-icons">live_help</i></a>
     </div>
@@ -281,15 +314,10 @@
   <footer>
     <%- include("../partials/footer"); %>
   </footer>
-<% if (helper) { %>
   <script>
     var helper_id = <%= helper %>;
-  </script>
-<% } %>
-<% if (student) { %>
-  <script>
     var student_id = <%= student %>;
+    var socket = io();
   </script>
-<% } %>
 </body>
 </html>

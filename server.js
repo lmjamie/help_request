@@ -1,12 +1,21 @@
+// Modules
 const express = require('express');
 const app = express();
+const http = require('http').Server(app); // Required for sockect.io apparently
+const io = require("socket.io")(http);
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const favicon = require('serve-favicon');
+
+// Controllers
 const controllerRequest = require('./controllers/request.js');
 const controllerServe = require('./controllers/serve.js');
+const controllerHelper = require('./controllers/helper.js');
 const controllerPage = require('./controllers/page.js');
+const controllerSocket = require('./controllers/socket.js');
+
+// Constant
 const secret = "CAMSGLORY";
 
 app.set("port", (process.env.PORT || 5000));
@@ -36,7 +45,14 @@ app.get("/serving", controllerServe.handleServingRequest);
 app.put("/serve", controllerServe.handleServeRequest);
 app.delete("/serve/:id", controllerServe.handleCompleteServe);
 
-// Listen up
-app.listen(app.get("port"), function() {
+// Helper Routes
+app.post("/login", controllerHelper.handleLogin);
+app.post("/logout", controllerHelper.handleLogout);
+
+// Socket.io Events
+io.on("connection", controllerSocket.handleConnection);
+
+// Listen up, listening with http server for socket.io
+http.listen(app.get("port"), function() {
   console.log("Server now listening on port", app.get("port"));
 });

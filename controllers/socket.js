@@ -1,0 +1,26 @@
+function handleConnection(socket) {
+  console.log("A user has connected");
+
+  socket.on("login", function () {
+      console.log("A helper has logged in.");
+      socket.join("helpers");
+  });
+
+  socket.on("current change", function () {
+    console.log("Current requests have been updated.");
+    socket.broadcast.emit("current change");
+  });
+
+  socket.on("serving change", function () {
+    console.log("Serving requests have been updated.");
+    socket.broadcast.emit("serving change");
+  });
+
+  socket.on("disconnect", function () {
+    console.log("A user has disconnected");
+  });
+}
+
+module.exports = {
+  handleConnection: handleConnection
+};

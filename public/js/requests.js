@@ -33,6 +33,7 @@ function studentCurrentClick(elem) {
       Materialize.updateTextFields();
     },
     complete: function() {
+
       activeCurrent = null;
     }
   });
@@ -43,13 +44,13 @@ function updateAllServing() {
     if (data.rows.length > 0) {
       var table_string = '<table class="responsive-table bordered"><thead><th>Name</th>' +
       '<th>Class</th><th>Location</th><th>Description</th>' +
-      (typeof helper_id !== 'undefined' ? '<th>Contact</th>' : '') + '<th>Helped By</th><th>Minutes</th></thead><tbody>';
+      (helper_id ? '<th>Contact</th>' : '') + '<th>Helped By</th><th>Minutes</th></thead><tbody>';
       data.rows.forEach(function (s) {
         table_string += '<tr data-id="' + s.id  + '" data-helperid="' +
-        s.helper_id + '"' + (typeof helper_id !== 'undefined' ? ' onclick="servingClick($(this));"' : '') +
+        s.helper_id + '"' + (helper_id ? ' onclick="servingClick($(this));"' : '') +
        '><td>' + s.r_fname + " " + s.r_lname + '<td>' + s.class + '</td><td>' +
        s.location + '</td><td>' + s.description + '</td>' +
-       (typeof helper_id !== 'undefined' ? '<td>' + s.contact + '</td>' : '') + '<td>' + s.h_fname + " " +
+       (helper_id ? '<td>' + s.contact + '</td>' : '') + '<td>' + s.h_fname + " " +
        s.h_lname + '</td><td><div class="clock" data-started="' + Date.parse(s.started) +
        '"></div></td></tr>';
       });
@@ -66,14 +67,14 @@ function updateAllCurrent() {
     if (data.rows.length > 0) {
       var table_string =  '<table class="responsive-table bordered"><thead><th>Name</th>' +
       '<th>Class</th><th>Location</th><th>Description</th>' +
-      (typeof helper_id !== 'undefined' ? '<th>Contact</th>' : '') + '<th>Minutes</th></thead><tbody>';
+      (helper_id ? '<th>Contact</th>' : '') + '<th>Minutes</th></thead><tbody>';
       data.rows.forEach(function (r, i) {
         table_string += '<tr data-id="' + r.id + '" data-contact="' + r.contact +
-        '"' + (typeof helper_id !== 'undefined' ? 'onclick="helperCurrentClick($(this), ' + (i == 0) +
-        ');"' : ( r.id == student_id ? 'onclick="studentCurrentClick($(this));"' : '')) +
+        '"' + (helper_id ? 'onclick="helperCurrentClick($(this), ' + (i == 0) +
+        ');"' : (r.id == student_id ? 'onclick="studentCurrentClick($(this));"' : '')) +
         '><td>' + r.fname + " " + r.lname + '</td><td>' + r.class + '</td><td>' +
         r.location + '</td><td>' + r.description + '</td>' +
-        (typeof helper_id !== 'undefined' ? '<td>' + r.contact + '</td>' : '') +
+        (helper_id ? '<td>' + r.contact + '</td>' : '') +
         '<td><div class="clock" data-started="' + Date.parse(r.started) +
         '"></div></td></tr>';
       });
@@ -96,6 +97,8 @@ function serveCurrent() {
     }
   }).done(function () {
     var name = $("td", activeCurrent).first().text();
+    socket.emit("serving change");
+    socket.emit("current change");
     updateAllServing();
     updateAllCurrent();
     Materialize.toast("Now serving " + name, 1500);
@@ -112,6 +115,7 @@ function completeServing() {
     url: "/serve/" + activeServe.attr("data-id")
   }).done(function () {
     var name = $("td", activeServe).first().text();
+    socket.emit("serving change");
     updateAllServing();
     Materialize.toast("Completed helping " + name, 1500);
   }).fail(function () {
@@ -149,6 +153,7 @@ function addCurrent() {
       contact: $("#contact").val()
     }
   }).done(function (data) {
+    socket.emit("current change");
     updateAllCurrent();
     removeAdding(data.newRequestId);
     Materialize.toast("Added help request for " + $("#fname").val() + $("#lname").val(), 1500);
@@ -164,6 +169,7 @@ function removeCurrent(modal_id) {
     url: "/request/" + activeCurrent.attr("data-id")
   }).done(function () {
     var name = $("td", activeCurrent).first().text();
+    socket.emit("current change");
     updateAllCurrent();
     if (modal_id == "editCurrent")
       allowToAdd();
@@ -189,6 +195,7 @@ function updateCurrent() {
     }
   }).done(function () {
     var name = $("td", activeCurrent).first().text();
+    socket.emit("current change");
     updateAllCurrent();
     Materialize.toast("Updated request for " + name, 1500);
   }).fail(function () {
