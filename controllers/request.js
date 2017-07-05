@@ -6,6 +6,7 @@ function handleAddRequest(request, response) {
   modelRequest.addRequest(requestInfo, function(error, result) {
     if (error)
       return response.status(error.code).json(error);
+    request.session.student = result.newRequestId;
     response.json(result);
   });
 }
@@ -35,7 +36,22 @@ function handleRemoveRequest(request, response) {
   modelRequest.removeRequest(id, function(error, result) {
     if (error)
       return response.status(error.code).json(error);
+    if (request.session.student)
+      request.session = null;
     response.json(result);
+  });
+}
+
+function handleCleanUp(request, response) {
+  if (!request.session.student)
+    return response.status(400).json({
+      status: "Failure",
+      failInfo: "No student session to remove."
+    });
+  request.session = null; // destroy the cookie session
+  response.json({
+    status: "Success",
+    info: "Session removed"
   });
 }
 
@@ -43,5 +59,6 @@ module.exports = {
   handleAddRequest: handleAddRequest,
   handleEditRequest: handleEditRequest,
   handleCurrentRequests: handleCurrentRequests,
-  handleRemoveRequest: handleRemoveRequest
+  handleRemoveRequest: handleRemoveRequest,
+  handleCleanUp: handleCleanUp
 };

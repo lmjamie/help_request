@@ -6,9 +6,9 @@
       <li id="addbtn"><a href="#addCurrent">Request Help <i class="material-icons right">live_help</i></a></li>
     <% } %>
     <% if (!helper) { %>
-      <li><a href="#login">Helper Login <i class="material-icons right">face</i></a></li>
+      <li id="loginbtn"><a href="#login">Helper Login <i class="material-icons right">face</i></a></li>
     <% } else { %>
-      <li><a href="#">Logout<i class="material-icons right">close</i></a></li>
+      <li id="logoutbtn"><a href="#" onclick="logout();">Logout<i class="material-icons right">close</i></a></li>
     <% } %>
     </ul>
   </div>

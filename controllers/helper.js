@@ -6,13 +6,23 @@ function handleLogin(request, response) {
   console.log("login attempt for with username:", username);
   modelHelper.login(username, password, function (error, result) {
     if (error)
-      response.status(error.code).json(error);
-      request.session.  
+      return response.status(error.code).json(error);
+    request.session.helper = result.helper_id;
+    response.json(result);
   })
 }
 
 function handleLogout(request, response) {
-
+  if (!request.session.helper)
+    return response.status(400).json({
+      status: "Failure",
+      failInfo: "Error logging out. Not Logged in."
+    });
+  request.session = null; // destroy the cookie session
+  response.json({
+    status: "Success",
+    info: "Helper logged out"
+  });
 }
 
 module.exports = {

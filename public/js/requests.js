@@ -1,3 +1,48 @@
+function login() {
+  $("#login").modal("close");
+  $.post({
+    url: "/login",
+    data: {
+      username: $("#username").val(),
+      password: $("#password").val()
+    }
+  }).done(function (data) {
+    socket.emit("login", data);
+    helper_id = data.helper_id;
+    removeAdding(false);
+    switchLoginLogoutBtns(true); // means switch to logout btn
+    // This will make sure helper has permissions for the requests
+    updateAllServing();
+    updateAllCurrent();
+    Materialize.toast("Successfully Logged in. Welcome " + data.name, 2000);
+  }).fail(function (data) {
+    data = data.responseJSON;
+    Materialize.toast("Failed to Login: " + data.failInfo, 1500);
+  });
+}
+
+function logout() {
+  $.post("/logout").done(function () {
+    socket.emit("logout");
+    helper_id = false;
+    allowToAdd();
+    switchLoginLogoutBtns(false); // means switch to login btn
+    Materialize.toast("Successfully Logged out.", 1500);
+  }).fail(function (data) {
+    data = data.responseJSON;
+    Materialize.toast("Error: " + data.failInfo, 1500);
+  });
+}
+
+function switchLoginLogoutBtns(login) {
+  if (login)
+    $("#loginbtn").replaceWith('<li id="logoutbtn"><a href="#" onclick="logout();">Logout<i class="' +
+    'material-icons right">close</i></a></li>');
+  else
+    $("#logoutbtn").replaceWith('<li id="loginbtn"><a href="#login">Helper Login' +
+    ' <i class="material-icons right">face</i></a></li>');
+}
+
 function servingClick(elem) {
   activeServe = elem;
   $("#serveConfirm").modal("open", {
@@ -33,7 +78,6 @@ function studentCurrentClick(elem) {
       Materialize.updateTextFields();
     },
     complete: function() {
-
       activeCurrent = null;
     }
   });
@@ -59,6 +103,23 @@ function updateAllServing() {
       setupServingClocks();
     } else
       $("#serving").html("<span>Currently no one is being served.</span>");
+    if (student_id)
+      if(!$("tr[data-id=" + student_id + "]").length) {
+        allowToAdd();
+        cleanUp();
+      }
+  });
+}
+
+function cleanUp() {
+  $.ajax({
+    method: "DELETE",
+    url: "/request/session"
+  }).done(function (data) {
+    Materialize.toast("Your help request has been completed!", 1750);
+  }).fail(function (data) {
+    data = data.responseJSON;
+    Materialize.toast("Error: " + data.failInfo, 1500);
   });
 }
 
@@ -102,8 +163,9 @@ function serveCurrent() {
     updateAllServing();
     updateAllCurrent();
     Materialize.toast("Now serving " + name, 1500);
-  }).fail(function () {
-    Materialize.toast("Something went wrong...", 1500);
+  }).fail(function (data) {
+    data = data.responseJSON;
+    Materialize.toast("Error: " + data.failInfo, 1500);
   });
   return false;
 }
@@ -118,8 +180,9 @@ function completeServing() {
     socket.emit("serving change");
     updateAllServing();
     Materialize.toast("Completed helping " + name, 1500);
-  }).fail(function () {
-    Materialize.toast("Something went wrong...", 1500);
+  }).fail(function (data) {
+    data = data.responseJSON;
+    Materialize.toast("Error: " + data.failInfo, 1500);
   });
   return false;  // To not follow the link
 }
@@ -157,8 +220,9 @@ function addCurrent() {
     updateAllCurrent();
     removeAdding(data.newRequestId);
     Materialize.toast("Added help request for " + $("#fname").val() + $("#lname").val(), 1500);
-  }).fail(function () {
-    Materialize.toast("Something went wrong...", 1500);
+  }).fail(function (data) {
+    data = data.responseJSON;
+    Materialize.toast("Error: " + data.failInfo, 1500);
   });
 }
 
@@ -174,8 +238,9 @@ function removeCurrent(modal_id) {
     if (modal_id == "editCurrent")
       allowToAdd();
     Materialize.toast("Removed " + name + " from the queue", 1500);
-  }).fail(function () {
-    Materialize.toast("Something went wrong...", 1500);
+  }).fail(function (data) {
+    data = data.responseJSON;
+    Materialize.toast("Error: " + data.failInfo, 1500);
   });
   return false;
 }
@@ -198,7 +263,8 @@ function updateCurrent() {
     socket.emit("current change");
     updateAllCurrent();
     Materialize.toast("Updated request for " + name, 1500);
-  }).fail(function () {
-    Materialize.toast("Something went wrong...", 1500);
+  }).fail(function (data) {
+    data = data.responseJSON;
+    Materialize.toast("Error: " + data.failInfo, 1500);
   });
 }

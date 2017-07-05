@@ -1,9 +1,14 @@
 function handleConnection(socket) {
   console.log("A user has connected");
 
-  socket.on("login", function () {
-      console.log("A helper has logged in.");
+  socket.on("login", function (info) {
+      console.log("Helper", info.name, "has logged in.");
       socket.join("helpers");
+  });
+
+  socket.on("logout", function () {
+    console.log("A helper has been logged out:");
+    socket.leave("helpers");
   });
 
   socket.on("current change", function () {

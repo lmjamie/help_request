@@ -20,6 +20,28 @@ function validate_id(id, onErrorCall) {
   return true;
 }
 
+function fetchHelper(username, callback) {
+  pool.query({
+    name: "fetch-helper",
+    text: "SELECT id, fname, lname, pass_hash AS phash FROM helpers WHERE username = $1",
+    values: [username]
+  }, function (error, result) {
+    if (error) {
+      console.error(error);
+      return callback({
+        status: "Failure",
+        code: 500,
+        failInfo: "Failed to fetch helper"
+      });
+    }
+    callback(null, {
+      status: "Success",
+      info: "Result from query",
+      rows: result.rows
+    });
+  });
+}
+
 function insertRequest(requestInfo, callback) {
   //insert request and get id.
   pool.query({
@@ -305,5 +327,6 @@ module.exports = {
   deleteServe: deleteServe,
   getClassesNames: getClassesNames,
   getLocationsNames: getLocationsNames,
+  fetchHelper: fetchHelper,
   validate_id: validate_id
 };

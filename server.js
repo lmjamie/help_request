@@ -38,6 +38,7 @@ app.get("/", controllerPage.renderQueue);
 app.get("/requests", controllerRequest.handleCurrentRequests);
 app.put("/request", controllerRequest.handleAddRequest);
 app.post("/request", controllerRequest.handleEditRequest);
+app.delete("/request/session", controllerRequest.handleCleanUp);
 app.delete("/request/:id", controllerRequest.handleRemoveRequest);
 
 // Serving Routes
