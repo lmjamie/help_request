@@ -26,6 +26,7 @@ $("document").ready(function () {
   // Socket.io events
   socket.on("current change", updateAllCurrent);
   socket.on("serving change", updateAllServing);
+  socket.on("new request", requestNotfication);
 });
 
 function setupAllClocks() {
@@ -37,7 +38,7 @@ function setupAllClocks() {
 function setupServingClocks() {
   if (typeof clocks.serving !== 'undefined')
     clocks.serving.forEach(function (s) {
-      s._destroyTimer();
+      s.stop();
     });
   clocks.serving = [];
   $("#serving .clock").each(function (i) {
@@ -57,7 +58,7 @@ function setupServingClocks() {
 function setupCurrentClocks() {
   if (typeof clocks.current !== 'undefined')
     clocks.current.forEach(function (c) {
-      c._destroyTimer();
+      c.stop();
     });
   clocks.current = [];
   $("#current .clock").each(function (i) {

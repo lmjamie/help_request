@@ -7,7 +7,7 @@ function login() {
       password: $("#password").val()
     }
   }).done(function (data) {
-    socket.emit("login", data);
+    socket.emit("login", data.name);
     helper_id = data.helper_id;
     removeAdding(false);
     switchLoginLogoutBtns(true); // means switch to logout btn
@@ -27,6 +27,8 @@ function logout() {
     helper_id = false;
     allowToAdd();
     switchLoginLogoutBtns(false); // means switch to login btn
+    updateAllServing();
+    updateAllCurrent();
     Materialize.toast("Successfully Logged out.", 1500);
   }).fail(function (data) {
     data = data.responseJSON;
@@ -103,12 +105,16 @@ function updateAllServing() {
       setupServingClocks();
     } else
       $("#serving").html("<span>Currently no one is being served.</span>");
-    if (student_id)
-      if(!$("tr[data-id=" + student_id + "]").length) {
-        allowToAdd();
-        cleanUp();
-      }
+    checkIfCompletedOrRemoved();
   });
+}
+
+function checkIfCompletedOrRemoved() {
+  if (student_id)
+    if(!$("tr[data-id=" + student_id + "]").length) {
+      allowToAdd();
+      cleanUp();
+    }
 }
 
 function cleanUp() {
@@ -144,6 +150,7 @@ function updateAllCurrent() {
       setupCurrentClocks();
     } else
       $("#current").html("<span>No one is currently waiting for help.</span>");
+    checkIfCompletedOrRemoved();
   });
 }
 
@@ -216,10 +223,12 @@ function addCurrent() {
       contact: $("#contact").val()
     }
   }).done(function (data) {
+    var name = $("#fname").val() + " " + $("#lname").val();
     socket.emit("current change");
+    socket.emit("new request", name);
     updateAllCurrent();
     removeAdding(data.newRequestId);
-    Materialize.toast("Added help request for " + $("#fname").val() + $("#lname").val(), 1500);
+    Materialize.toast("Added help request for " + name, 1500);
   }).fail(function (data) {
     data = data.responseJSON;
     Materialize.toast("Error: " + data.failInfo, 1500);
@@ -267,4 +276,9 @@ function updateCurrent() {
     data = data.responseJSON;
     Materialize.toast("Error: " + data.failInfo, 1500);
   });
+}
+
+function requestNotfication(name) {
+  Materialize.toast("<span>" + name + " has requested help</span>" +
+  "<audio src=\"sounds/new_request_sound.mp3\" autoplay></audio>", 2250);
 }
