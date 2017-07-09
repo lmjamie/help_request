@@ -2,7 +2,6 @@ const modelRequest = require('../models/request.js');
 
 function handleAddRequest(request, response) {
   var requestInfo = request.body;
-  console.log("Adding Request:", requestInfo);
   modelRequest.addRequest(requestInfo, function(error, result) {
     if (error)
       return response.status(error.code).json(error);
@@ -13,7 +12,7 @@ function handleAddRequest(request, response) {
 
 function handleEditRequest(request, response) {
   var updatedInfo = request.body;
-  console.log("Editing Request for:", updatedInfo);
+  console.log("Editing Request for", updatedInfo.fname + " " + updatedInfo.lname);
   modelRequest.editRequest(updatedInfo, function(error, result) {
     if (error)
       return response.status(error.code).json(error);

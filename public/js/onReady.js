@@ -7,20 +7,9 @@ $("document").ready(function () {
     $(this).modal();
   });
 
-  // on change event for add Request
-  $("#location").change(function () {
-    if ($(this).val() == "Remote")
-      $("#contact").prop("required", true);
-    else
-      $("#contact").prop("required", false);
-  });
-
-  // on change event for edit current
-  $("#editlocation").change(function () {
-    if ($(this).val() == "Remote")
-      $("#editcontact").prop("required", true);
-    else
-      $("#editcontact").prop("required", false);
+  // Select intitializing
+  $("#addCurrent select").each(function () {
+    $(this).material_select();
   });
 
   // Socket.io events

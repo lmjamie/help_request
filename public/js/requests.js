@@ -14,7 +14,8 @@ function login() {
     // This will make sure helper has permissions for the requests
     updateAllServing();
     updateAllCurrent();
-    Materialize.toast("Successfully Logged in. Welcome " + data.name, 2000);
+    Materialize.toast("<span>Successfully Logged in.</span><br><span>Welcome " +
+      data.name + "</span>", 2000);
   }).fail(function (data) {
     data = data.responseJSON;
     Materialize.toast("Failed to Login: " + data.failInfo, 1500);
@@ -27,7 +28,7 @@ function logout() {
     helper_id = false;
     allowToAdd();
     switchLoginLogoutBtns(false); // means switch to login btn
-    updateAllServing();
+    updateAllServing(); //Don't want them having access to previous permissions
     updateAllCurrent();
     Materialize.toast("Successfully Logged out.", 1500);
   }).fail(function (data) {
@@ -71,13 +72,21 @@ function studentCurrentClick(elem) {
   activeCurrent = elem;
   $("#editCurrent").modal("open", {
     ready: function () {
+      alert("Before");
       $("#editfname").val(activeCurrent.attr("data-fname"));
       $("#editlname").val(activeCurrent.attr("data-lname"));
-      $("#editclass option[value='" + $("td:nth-child(2)", activeCurrent).text() + "']").prop("selected", true);
-      $("#editlocation option[value='" + $("td:nth-child(3)", activeCurrent).text() + "']").prop("selected", true);
+      alert("After");
       $("#editdescription").text($("td:nth-child(4)", activeCurrent).text());
       $("#editcontact").val(activeCurrent.attr("data-contact"));
       Materialize.updateTextFields();
+      alert("updateTextFields");
+      $("#editclass option[value='" + $("td:nth-child(2)", activeCurrent).text() + "']").prop("selected", true);
+      $("#editlocation option[value='" + $("td:nth-child(3)", activeCurrent).text() + "']").prop("selected", true);
+      // Try this to make it a materialize select
+      $("#editCurrent select").each(function () {
+        $(this).material_select();
+      });
+      alert("After material_select");
     },
     complete: function() {
       activeCurrent = null;

@@ -63,7 +63,7 @@ function validate(toValidate, onErrorCall, isDBCall = false) {
       onErrorCall({
         status: "Failure",
         code: 400,
-        failInfo: "Missing required information: contact"
+        failInfo: "Contact field is required if the location is marked as remote"
       });
       return false;
     }

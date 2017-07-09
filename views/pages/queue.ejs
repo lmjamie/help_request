@@ -168,20 +168,20 @@
                 <label for="editlname">Last Name</label>
               </div>
               <div class="input-field col s6">
-                <select class="browser-default" id="editclass">
+                <select id="editclass">
                 <% class_names.forEach(function (name) { %>
                   <option value="<%= name %>"><%= name %></option>
                 <% }); %>
                 </select>
-                <label for="editclass" class="active">Class</label>
+                <label for="editclass">Class</label>
               </div>
               <div class="input-field col s6">
-                <select class="browser-default" id="editlocation">
+                <select id="editlocation">
                 <% location_names.forEach(function (name) { %>
                   <option value="<%= name %>"><%= name %></option>
                 <% }); %>
                 </select>
-                <label for="editlocation" class="active">Location</label>
+                <label for="editlocation">Location</label>
               </div>
               <div class="input-field col s12">
                 <textarea name="" id="editdescription" class="materialize-textarea" data-length="200"></textarea>
@@ -229,22 +229,22 @@
                 <label for="lname">Last Name</label>
               </div>
               <div class="input-field col s6">
-                <select class="browser-default" id="class" required>
+                <select id="class" required>
                   <option value="" disabled selected></option>
                 <% class_names.forEach(function (name) { %>
                   <option value="<%= name %>"><%= name %></option>
                 <% }); %>
                 </select>
-                <label for="class" class="active">Class</label>
+                <label for="class">Class</label>
               </div>
               <div class="input-field col s6">
-                <select class="browser-default" id="location" require>
+                <select id="location" required>
                   <option value="" disabled selected></option>
                 <% location_names.forEach(function (name) { %>
                   <option value="<%= name %>"><%= name %></option>
                 <% }); %>
                 </select>
-                <label for="location" class="active">Location</label>
+                <label for="location">Location</label>
               </div>
               <div class="input-field col s12">
                 <textarea name="" id="description" class="materialize-textarea validate" data-length="200"></textarea>

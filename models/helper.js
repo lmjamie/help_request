@@ -25,7 +25,7 @@ function login(un, pw, callback) {
         return callback({
           status: "Failure",
           code: 500,
-          failInfo: "Something went wrong while comparing passwords"
+          failInfo: "Something went wrong while comparing password"
         });
       }
       if (!match)
