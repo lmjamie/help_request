@@ -16,6 +16,9 @@ $("document").ready(function () {
   socket.on("current change", updateAllCurrent);
   socket.on("serving change", updateAllServing);
   socket.on("new request", requestNotfication);
+
+  // Check if things have been Removed
+  checkIfCompletedOrRemoved();
 });
 
 function setupAllClocks() {

@@ -72,21 +72,18 @@ function studentCurrentClick(elem) {
   activeCurrent = elem;
   $("#editCurrent").modal("open", {
     ready: function () {
-      alert("Before");
-      $("#editfname").val(activeCurrent.attr("data-fname"));
-      $("#editlname").val(activeCurrent.attr("data-lname"));
-      alert("After");
-      $("#editdescription").text($("td:nth-child(4)", activeCurrent).text());
-      $("#editcontact").val(activeCurrent.attr("data-contact"));
-      Materialize.updateTextFields();
-      alert("updateTextFields");
-      $("#editclass option[value='" + $("td:nth-child(2)", activeCurrent).text() + "']").prop("selected", true);
-      $("#editlocation option[value='" + $("td:nth-child(3)", activeCurrent).text() + "']").prop("selected", true);
-      // Try this to make it a materialize select
-      $("#editCurrent select").each(function () {
-        $(this).material_select();
-      });
-      alert("After material_select");
+      if ($.trim($("#editfname").val()).length === 0) {
+        $("#editfname").val(activeCurrent.attr("data-fname"));
+        $("#editlname").val(activeCurrent.attr("data-lname"));
+        $("#editdescription").text($("td:nth-child(4)", activeCurrent).text());
+        $("#editcontact").val(activeCurrent.attr("data-contact"));
+        Materialize.updateTextFields();
+        $("#editclass option[value='" + $("td:nth-child(2)", activeCurrent).text() + "']").prop("selected", true);
+        $("#editlocation option[value='" + $("td:nth-child(3)", activeCurrent).text() + "']").prop("selected", true);
+        $("#editCurrent select").each(function () {
+          $(this).material_select();
+        });
+      }
     },
     complete: function() {
       activeCurrent = null;
@@ -134,7 +131,7 @@ function cleanUp() {
     Materialize.toast("Your help request has been completed!", 1750);
   }).fail(function (data) {
     data = data.responseJSON;
-    Materialize.toast("Error: " + data.failInfo, 1500);
+    Materialize.toast("Error: " + data.failInfo, 1750);
   });
 }
 
@@ -205,10 +202,10 @@ function completeServing() {
 
 function allowToAdd() {
   student_id = null;
-  $("#nav-list").prepend('<li id="addbtn"><a href="#addCurrent">' +
+  $("#nav-list").prepend('<li id="addbtn" class="hide-on-small-only"><a href="#addCurrent">' +
   'Request Help <i class="material-icons right">live_help</i></a></li>');
   $("main").append('<div class="fixed-action-btn click-to-toggle" id="addfab">' +
-  '<a href="#addCurrent" class="btn-floating blue darken-1">' +
+  '<a href="#addCurrent" class="btn-floating blue darken-1 pulse">' +
   '<i class="material-icons">live_help</i></a></div>');
 }
 
@@ -253,7 +250,7 @@ function removeCurrent(modal_id) {
     var name = $("td", activeCurrent).first().text();
     socket.emit("current change");
     updateAllCurrent();
-    if (modal_id == "editCurrent")
+    if (modal_id === "editCurrent")
       allowToAdd();
     Materialize.toast("Removed " + name + " from the queue", 1500);
   }).fail(function (data) {
