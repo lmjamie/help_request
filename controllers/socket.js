@@ -2,8 +2,11 @@ function handleConnection(socket) {
   console.log("A user has connected");
 
   socket.on("login", function (name) {
+    if (name)
       console.log("Helper", name, "has logged in.");
-      socket.join("helpers");
+    else
+      console.log("A helper has refreshed.");
+    socket.join("helpers");
   });
 
   socket.on("logout", function () {
@@ -11,9 +14,9 @@ function handleConnection(socket) {
     socket.leave("helpers");
   });
 
-  socket.on("new request", function (name) {
-    console.log(name, "has requested help!");
-    socket.to("helpers").emit("new request", name);
+  socket.on("new request", function (info) {
+    console.log(info.name, "has requested help for", info.class + "!");
+    socket.to("helpers").emit("new request", info);
   });
 
   socket.on("current change", function () {

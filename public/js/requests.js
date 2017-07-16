@@ -14,11 +14,10 @@ function login() {
     // This will make sure helper has permissions for the requests
     updateAllServing();
     updateAllCurrent();
-    Materialize.toast("<span>Successfully Logged in.</span><br><span>Welcome " +
-      data.name + "</span>", 2000);
+    Materialize.toast("Successfully Logged in. Welcome " + data.name, 2000);
   }).fail(function (data) {
     data = data.responseJSON;
-    Materialize.toast("Failed to Login: " + data.failInfo, 1500);
+    Materialize.toast("Failed to Login: " + data.failInfo, 1750);
   });
 }
 
@@ -30,10 +29,10 @@ function logout() {
     switchLoginLogoutBtns(false); // means switch to login btn
     updateAllServing(); //Don't want them having access to previous permissions
     updateAllCurrent();
-    Materialize.toast("Successfully Logged out.", 1500);
+    Materialize.toast("Successfully Logged out.", 1750);
   }).fail(function (data) {
     data = data.responseJSON;
-    Materialize.toast("Error: " + data.failInfo, 1500);
+    Materialize.toast("Error: " + data.failInfo, 1750);
   });
 }
 
@@ -175,10 +174,10 @@ function serveCurrent() {
     socket.emit("current change");
     updateAllServing();
     updateAllCurrent();
-    Materialize.toast("Now serving " + name, 1500);
+    Materialize.toast("Now serving " + name, 1750);
   }).fail(function (data) {
     data = data.responseJSON;
-    Materialize.toast("Error: " + data.failInfo, 1500);
+    Materialize.toast("Error: " + data.failInfo, 1750);
   });
   return false;
 }
@@ -192,10 +191,10 @@ function completeServing() {
     var name = $("td", activeServe).first().text();
     socket.emit("serving change");
     updateAllServing();
-    Materialize.toast("Completed helping " + name, 1500);
+    Materialize.toast("Completed helping " + name, 1750);
   }).fail(function (data) {
     data = data.responseJSON;
-    Materialize.toast("Error: " + data.failInfo, 1500);
+    Materialize.toast("Error: " + data.failInfo, 1750);
   });
   return false;  // To not follow the link
 }
@@ -229,15 +228,18 @@ function addCurrent() {
       contact: $("#contact").val()
     }
   }).done(function (data) {
-    var name = $("#fname").val() + " " + $("#lname").val();
+    var info = {
+      name: $("#fname").val() + " " + $("#lname").val(),
+      class: $("#class").val()
+    };
     socket.emit("current change");
-    socket.emit("new request", name);
+    socket.emit("new request", info);
     updateAllCurrent();
     removeAdding(data.newRequestId);
-    Materialize.toast("Added help request for " + name, 1500);
+    Materialize.toast("Added your help request, " + info.name, 1750);
   }).fail(function (data) {
     data = data.responseJSON;
-    Materialize.toast("Error: " + data.failInfo, 1500);
+    Materialize.toast("Error: " + data.failInfo, 1750);
   });
 }
 
@@ -252,10 +254,10 @@ function removeCurrent(modal_id) {
     updateAllCurrent();
     if (modal_id === "editCurrent")
       allowToAdd();
-    Materialize.toast("Removed " + name + " from the queue", 1500);
+    Materialize.toast("Removed " + name + " from the queue", 1750);
   }).fail(function (data) {
     data = data.responseJSON;
-    Materialize.toast("Error: " + data.failInfo, 1500);
+    Materialize.toast("Error: " + data.failInfo, 1750);
   });
   return false;
 }
@@ -277,14 +279,14 @@ function updateCurrent() {
     var name = $("td", activeCurrent).first().text();
     socket.emit("current change");
     updateAllCurrent();
-    Materialize.toast("Updated request for " + name, 1500);
+    Materialize.toast("Updated request for " + name, 1750);
   }).fail(function (data) {
     data = data.responseJSON;
-    Materialize.toast("Error: " + data.failInfo, 1500);
+    Materialize.toast("Error: " + data.failInfo, 1750);
   });
 }
 
-function requestNotfication(name) {
-  Materialize.toast("<span>" + name + " has requested help</span>" +
-  "<audio src=\"sounds/new_request_sound.mp3\" autoplay></audio>", 2250);
+function requestNotfication(info) {
+  Materialize.toast("<span>" + info.name + " has requested help for " + info.class + "</span>" +
+  "<audio src=\"sounds/new_request_sound.mp3\" autoplay></audio>", 2500);
 }

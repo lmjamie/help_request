@@ -19,6 +19,10 @@ $("document").ready(function () {
 
   // Check if things have been Removed
   checkIfCompletedOrRemoved();
+
+  // Make sure to keep a helper who is already logged in in the helper room
+  if (helper_id)
+    socket.emit("login", false);
 });
 
 function setupAllClocks() {
