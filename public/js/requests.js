@@ -71,18 +71,16 @@ function studentCurrentClick(elem) {
   activeCurrent = elem;
   $("#editCurrent").modal("open", {
     ready: function () {
-      if ($.trim($("#editfname").val()).length === 0) {
-        $("#editfname").val(activeCurrent.attr("data-fname"));
-        $("#editlname").val(activeCurrent.attr("data-lname"));
-        $("#editdescription").text($("td:nth-child(4)", activeCurrent).text());
-        $("#editcontact").val(activeCurrent.attr("data-contact"));
-        Materialize.updateTextFields();
-        $("#editclass option[value='" + $("td:nth-child(2)", activeCurrent).text() + "']").prop("selected", true);
-        $("#editlocation option[value='" + $("td:nth-child(3)", activeCurrent).text() + "']").prop("selected", true);
-        $("#editCurrent select").each(function () {
-          $(this).material_select();
-        });
-      }
+      $("#editfname").val(activeCurrent.attr("data-fname"));
+      $("#editlname").val(activeCurrent.attr("data-lname"));
+      $("#editdescription").text($("td:nth-child(4)", activeCurrent).text());
+      $("#editcontact").val(activeCurrent.attr("data-contact"));
+      Materialize.updateTextFields();
+      $("#editclass option[value='" + $("td:nth-child(2)", activeCurrent).text() + "']").prop("selected", true);
+      $("#editlocation option[value='" + $("td:nth-child(3)", activeCurrent).text() + "']").prop("selected", true);
+      $("#editCurrent select").each(function () {
+        $(this).material_select();
+      });
     },
     complete: function() {
       activeCurrent = null;
@@ -127,6 +125,7 @@ function cleanUp() {
     method: "DELETE",
     url: "/request/session"
   }).done(function (data) {
+    clearEditForm();
     Materialize.toast("Your help request has been completed!", 1750);
   }).fail(function (data) {
     data = data.responseJSON;
@@ -142,7 +141,8 @@ function updateAllCurrent() {
       (helper_id ? '<th>Contact</th>' : '') + '<th>Minutes</th></thead><tbody>';
       data.rows.forEach(function (r, i) {
         table_string += '<tr data-id="' + r.id + '" data-contact="' + r.contact +
-        '"' + (helper_id ? 'onclick="helperCurrentClick($(this), ' + (i == 0) +
+        '" data-fname="' + r.fname + '" data-lname="' + r.lname + '" ' +
+        (helper_id ? 'onclick="helperCurrentClick($(this), ' + (i == 0) +
         ');"' : (r.id == student_id ? 'onclick="studentCurrentClick($(this));"' : '')) +
         '><td>' + r.fname + " " + r.lname + '</td><td>' + r.class + '</td><td>' +
         r.location + '</td><td>' + r.description + '</td>' +
@@ -252,8 +252,10 @@ function removeCurrent(modal_id) {
     var name = $("td", activeCurrent).first().text();
     socket.emit("current change");
     updateAllCurrent();
-    if (modal_id === "editCurrent")
+    if (modal_id === "editCurrent") {
+      clearEditForm();
       allowToAdd();
+    }
     Materialize.toast("Removed " + name + " from the queue", 1750);
   }).fail(function (data) {
     data = data.responseJSON;
@@ -289,4 +291,8 @@ function updateCurrent() {
 function requestNotfication(info) {
   Materialize.toast("<span>" + info.name + " has requested help for " + info.class + "</span>" +
   "<audio src=\"sounds/new_request_sound.mp3\" autoplay></audio>", 2500);
+}
+
+function clearEditForm() {
+  $("#editCurrent .input-field").find(":input").val("");
 }
