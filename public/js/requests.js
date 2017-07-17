@@ -220,16 +220,16 @@ function addCurrent() {
     method: "PUT",
     url: "/request",
     data: {
-      fname: $("#fname").val(),
-      lname: $("#lname").val(),
+      fname: escapeHtml($.trim($("#fname").val())),
+      lname: escapeHtml($.trim($("#lname").val())),
       class: $("#class").val(),
       location: $("#location").val(),
-      description: $("#description").val(),
-      contact: $("#contact").val()
+      description: escapeHtml($.trim($("#description").val())),
+      contact: escapeHtml($.trim($("#contact").val()))
     }
   }).done(function (data) {
     var info = {
-      name: $("#fname").val() + " " + $("#lname").val(),
+      name: escapeHtml($.trim($("#fname").val())) + " " + escapeHtml($.trim($("#lname").val())),
       class: $("#class").val()
     };
     socket.emit("current change");
@@ -270,12 +270,12 @@ function updateCurrent() {
     url: "/request",
     data: {
       id: activeCurrent.attr("data-id"),
-      fname: $("#editfname").val(),
-      lname: $("#editlname").val(),
+      fname: escapeHtml($.trim($("#editfname").val())),
+      lname: escapeHtml($.trim($("#editlname").val())),
       class: $("#editclass").val(),
       location: $("#editlocation").val(),
-      description: $("#editdescription").val(),
-      contact: $("#editcontact").val()
+      description: escapeHtml($.trim($("#editdescription").val())),
+      contact: escapeHtml($.trim($("#editcontact").val()))
     }
   }).done(function () {
     var name = $("td", activeCurrent).first().text();
@@ -295,4 +295,19 @@ function requestNotfication(info) {
 
 function clearEditForm() {
   $("#editCurrent .input-field").find(":input").val("");
+}
+
+function escapeHtml(text) {
+  var map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+    '/': '&#x2F;',
+    '`': '&#x60;',
+    '=': '&#x3D;'
+  };
+
+  return text.replace(/[&<>"'`=\/]/g, function(m) { return map[m]; });
 }
